@@ -102,6 +102,8 @@ def plot_maps(df, authorities, column, title):
     df[column] = df[column].astype(float)
 
     # dates = [201516, 201617, 201718, 201819, 201920, 202021, 202122]
+
+    
     dates = [202122]
 
     for date in dates:
@@ -111,13 +113,13 @@ def plot_maps(df, authorities, column, title):
 
         fig = px.choropleth_mapbox(
             sdf,
-            geojson=authorities, 
+            geojson=authorities,
             locations='la_name',
-            featureidkey="properties.LAD21NM",
-            color_continuous_scale="Blues",
+            featureidkey="properties.CTYUA21NM",
+            color_continuous_scale="Hot_r",
             mapbox_style="carto-positron",
-            center={"lat": 55.09621, "lon": -4.0286298},
-            zoom=4.8,
+            center={"lat": 53, "lon": -1.5},
+            zoom=5.5,
             range_color=(55,90),
             labels=None,
             opacity=0.5,
@@ -322,50 +324,36 @@ def horizontal_total_students(df):
 
 if __name__ == "__main__":
 
-    # Read data from a json
-    authorities = json.load(open('Local_Authority_Districts_(December_2021)_GB_BFC.json'))
+
+    authorities = json.load(open('Counties_and_Unitary_Authorities_(December_2021)_UK_BGC.geojson'))
 
     # Iterative over JSON
-
     for i in range(len(authorities["features"])):
         # Extract local authority name
-        la = authorities["features"][i]['properties']['LAD21NM']
+        la = authorities["features"][i]['properties']['CTYUA21NM']
         # Assign the local authority name to a new 'id' property for later linking to dataframe
         authorities["features"][i]['id'] = la
+
+
+
 
     # Read data from a csv
     df = pd.read_csv(r'data\ks2_regional_and_local_authority_2016_to_2022_provisional.csv', dtype={'la_name': str})
 
     # plot_map(df, authorities, "pt_mat_met_expected_standard", "Percentage of pupils meeting the expected standard in maths (2021/2022)")
-
     # plot_map(df, authorities, "pt_mat_met_higher_standard", "Percentage of pupils reaching the higher standard in maths test  (2021/2022)")
-
     # plot_map(df, authorities, "pt_read_met_expected_standard", "Percentage of pupils meeting the expected standard in reading")
     # plot_map(df, authorities, "pt_read_met_higher_standard", "Percentage of pupils reaching the higher standard in reading test")
+
+    plot_maps(df, authorities, "pt_read_met_expected_standard", "Percentage of pupils reaching the higher standard in maths test ")
+
+    # horizontal_total_students(df)
     
-
-    # plot_maps(df, authorities, "pt_read_met_expected_standard", "Percentage of pupils reaching the higher standard in maths test ")
-
-
-    horizontal_total_students(df)
-    
-    
-
-
-
     # plot_scatter(df)
 
     # plot_bar(df)
 
     # plot_line2(df)
-
-
-    # print("\nThere are some issues with the data")
-    # print("A few local authorities are merged together in the dataset, this results in a number local authorities not being plotted")
-    # print("This will mean a decent amount of data wrangling will have to be performed. \nFor example, for Norfolk...\n")
-    # demonstrate_data_issues()
-    # print()
-
 
 
 
